@@ -1,0 +1,10 @@
+{"id": "g001", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g002", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g003", "run": 2, "condition": "policy-in-user", "agrees_with_action": false}
+{"id": "g011", "run": 2, "condition": "policy-in-user", "agrees_with_action": false}
+{"id": "g004", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g005", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g007", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g008", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g009", "run": 2, "condition": "policy-in-user", "agrees_with_action": true}
+{"id": "g010", "run": 2, "condition": "policy-in-user", "agrees_with_action": false}
