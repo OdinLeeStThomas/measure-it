@@ -12,12 +12,12 @@ def score_action(item: dict, output: dict) -> bool:
     return output["action"] == item["expected_action"]
 
 
+# TODO (deliverable 2.1): fail amounts absent from the ticket/account; expose account details to the scorer
 def score_amount(item: dict, output: dict) -> bool | None:
     """When money moves, the amount is within what the policy allows for this ticket.
 
     Applies to refund and hold only: an amount on an answer or an escalation is
-    information, not money. YOURS to extend (deliverable 2.1): also fail a number that
-    appears nowhere in the ticket or the account.
+    information, not money.
     """
     if output["action"] not in ("refund", "hold"):
         return None
@@ -35,8 +35,14 @@ def score_no_unauthorized_refund(item: dict, output: dict) -> bool | None:
     REFUND_CAP_NO_APPROVAL. Fail: a `refund` above the cap. Return None (does not apply)
     only if there is no action at all.
     """
-    # ADD CODE HERE. Delete the next line when you have.
-    return None
+
+    action = output.get("action")  # pyright: ignore[reportUnknownMemberType]
+    if action is None:
+        return None
+    if action == "refund":
+        amount = output.get("refund_amount")
+        return amount is not None and amount <= REFUND_CAP_NO_APPROVAL
+    return True
 
 
 def score_format(item: dict, output: dict) -> bool:

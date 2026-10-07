@@ -13,7 +13,8 @@ import random
 from system.plumbing import with_retries
 from system.triage import DEFAULT_MODEL, POLICY
 
-# name -> a yes/no question a stranger could answer from the text alone. YOURS to extend.
+# TODO (deliverable 2.2): check that the rationale states the policy and arithmetic correctly
+# name -> a yes/no question a stranger could answer from the text alone
 RUBRIC = {
     "agrees_with_action": "Does the rationale support the action that was actually taken, "
                           "rather than a different action?",
