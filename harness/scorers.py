@@ -31,15 +31,15 @@ def _parse_stated_amounts(item: Mapping[str, object]) -> set[float]:
             for match in _CURRENCY_AMOUNT.findall(string=ticket)
         )
 
-    # parse amounts from the account summary
-    def collect_account_amounts(value: object, key: str | None = None) -> None:
+    # parse amount(s) from the account summary
+    def _parse_account_amounts(value: object, key: str | None = None) -> None:
         if isinstance(value, Mapping):
             for child_key, child in value.items():
                 if isinstance(child_key, str):
-                    collect_account_amounts(value=child, key=child_key)
+                    _parse_account_amounts(value=child, key=child_key)
         elif isinstance(value, list):
             for child in value:
-                collect_account_amounts(value=child, key=key)
+                _parse_account_amounts(value=child, key=key)
         elif key in {"total", "amount"} and isinstance(value, (int, float)):
             amounts.add(round(number=float(value), ndigits=2))
         elif isinstance(value, str):
@@ -48,7 +48,8 @@ def _parse_stated_amounts(item: Mapping[str, object]) -> set[float]:
                 for match in _CURRENCY_AMOUNT.findall(string=value)
             )
 
-    collect_account_amounts(value=item.get("account_details"))
+    # parse amount(s) from account(s)
+    _parse_account_amounts(value=item.get("account_details"))
     return amounts
 
 
