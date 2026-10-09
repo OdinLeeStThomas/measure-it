@@ -1,5 +1,10 @@
+RUNS ?= 5
+
 .PHONY: run
 
-# score policy-in-user fixtures with per-slice detail
+# complete evaluation
 run:
-	uv run python score.py policy-in-user --detail > output.txt
+	uv run record.py --runs $(RUNS)
+	uv run record.py --runs $(RUNS) --policy-in system
+	uv run judge.py policy-in-user policy-in-system
+	uv run score.py policy-in-user policy-in-system --detail > output.txt
