@@ -19,11 +19,16 @@ def judge_path(condition: str, run_name: str) -> Path:
     return FIXTURES / condition / f"judge-{run_name}.jsonl"
 
 
-def recorded_ids(path: Path) -> set[str]:
-    """Which tickets this run file already holds, so a rerun continues rather than repeats."""
+def recorded_ids(path: Path, required_fields: tuple[str, ...] = ()) -> set[str]:
+    """Which tickets have complete records, so a rerun resumes missing work."""
     if not path.exists():
         return set()
-    return {json.loads(line)["id"] for line in path.read_text().splitlines() if line.strip()}
+    records = (json.loads(line) for line in path.read_text().splitlines() if line.strip())
+    return {
+        record["id"]
+        for record in records
+        if all(field in record for field in required_fields)
+    }
 
 
 def append(path: Path, record: dict) -> None:

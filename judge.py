@@ -23,11 +23,18 @@ def main() -> None:
     p.add_argument("--provider", choices=["gemini", "fake"], default="gemini")
     args: argparse.Namespace = p.parse_args()
 
-    items: dict[Any, dict] = {i["id"]: i for i in golden.load_golden()}
+    # load accounts and items
+    accounts: dict[str, dict] = golden.load_accounts()
+    items: dict[Any, dict] = {
+        item["id"]: item | {"account_details": accounts[item["account"]]}
+        for item in golden.load_golden()
+    }
+
+    # iterate over conditions
     for condition in args.conditions:
         for run_name, records in fixtures.runs(condition):
             path: Path = fixtures.judge_path(condition, run_name)
-            done: set[str] = fixtures.recorded_ids(path)
+            done: set[str] = fixtures.recorded_ids(path, required_fields=tuple(RUBRIC))
             todo: list[dict] = [r for r in records if r["id"] in items and r["id"] not in done]
             print(f"{condition} / {run_name}: {len(done)} judged, {len(todo)} to go ({len(RUBRIC)} question(s), via {args.provider})", flush=True)
             for rec in todo:
