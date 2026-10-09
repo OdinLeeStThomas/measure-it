@@ -2,6 +2,7 @@
 
 Record once, score many times. Nothing in here calls the model.
 """
+
 from __future__ import annotations
 
 import json
@@ -24,11 +25,7 @@ def recorded_ids(path: Path, required_fields: tuple[str, ...] = ()) -> set[str]:
     if not path.exists():
         return set()
     records = (json.loads(line) for line in path.read_text().splitlines() if line.strip())
-    return {
-        record["id"]
-        for record in records
-        if all(field in record for field in required_fields)
-    }
+    return {record["id"] for record in records if all(field in record for field in required_fields)}
 
 
 def append(path: Path, record: dict) -> None:

@@ -6,6 +6,7 @@
 
 The scorers are in harness/scorers.py and the report in harness/report.py.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -23,10 +24,7 @@ def main() -> None:
 
     # attach account info so scorers can check ticket and account amounts
     accounts: dict[str, dict[str, Any]] = golden.load_accounts()
-    items: dict[Any, dict] = {
-        item["id"]: item | {"account_details": accounts[item["account"]]}
-        for item in golden.load_golden()
-    }
+    items: dict[Any, dict] = {item["id"]: item | {"account_details": accounts[item["account"]]} for item in golden.load_golden()}
 
     # keep each condition's per-run tables for summaries and comparison
     tables_by: dict[str, list[report.Table]] = {}

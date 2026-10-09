@@ -1,6 +1,7 @@
 """Plumbing: retrying when the provider says "slow down", and a fake provider for
 checking your harness with no key. Not part of the system under test.
 """
+
 from __future__ import annotations
 
 import json
@@ -44,11 +45,11 @@ def with_retries(sample):
     and try again. The daily cap, or a provider that keeps returning 5xx, will not get
     better by waiting, so stop and say why.
     """
+
     def call(prompt: str, temperature: float | None, model: str, system: str | None = None) -> str:
         from google.genai import errors
 
-        switch = ("Everything recorded so far is kept: rerun the same command later (or "
-                  "with your partner's key) and it continues where it stopped.")
+        switch = "Everything recorded so far is kept: rerun the same command later (or with your partner's key) and it continues where it stopped."
         backoff, waited, server_errors = 10.0, 0.0, 0
         while True:
             try:
@@ -60,8 +61,7 @@ def with_retries(sample):
                 if daily:
                     raise SystemExit(f"\n{model} refused: the daily quota on this key is used up.\n{switch}")
                 if waited > 15 * 60:
-                    raise SystemExit(f"\n{model} has been rate limiting for 15 minutes; something other "
-                                     f"than the per-minute limit is wrong. {switch}")
+                    raise SystemExit(f"\n{model} has been rate limiting for 15 minutes; something other than the per-minute limit is wrong. {switch}")
                 delay = (asked + 1) if asked else backoff
                 backoff = min(backoff * 2, 60)
                 print(f"    rate limited; sleeping {delay:.0f}s", flush=True)
@@ -76,6 +76,7 @@ def with_retries(sample):
                 print(f"    retrying in {backoff:.0f}s", flush=True)
                 time.sleep(backoff)
                 backoff = min(backoff * 2, 60)
+
     return call
 
 
@@ -85,6 +86,7 @@ def fake_model(prompt: str, temperature: float | None, model: str, system: str |
     is a conclusion about this function, not about a model.
     """
     import re
+
     dollars = [float(x) for x in re.findall(r"\$(\d+(?:\.\d+)?)", prompt.split("TICKET:")[-1])]
     action = random.choices(["answer", "refund", "hold", "escalate"], weights=[4, 3, 2, 1])[0]
     amount = random.choice(dollars) if dollars and action in ("refund", "hold") else None

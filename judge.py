@@ -7,6 +7,7 @@
 Writes fixtures/<condition>/judge-<run>.jsonl, one line per rationale. Like record.py it
 is resumable and never repeats a verdict it already has. The rubric is in harness/judge.py.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -25,10 +26,7 @@ def main() -> None:
 
     # load accounts and items
     accounts: dict[str, dict] = golden.load_accounts()
-    items: dict[Any, dict] = {
-        item["id"]: item | {"account_details": accounts[item["account"]]}
-        for item in golden.load_golden()
-    }
+    items: dict[Any, dict] = {item["id"]: item | {"account_details": accounts[item["account"]]} for item in golden.load_golden()}
 
     # iterate over conditions
     for condition in args.conditions:

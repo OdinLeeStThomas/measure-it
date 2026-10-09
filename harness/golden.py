@@ -1,4 +1,5 @@
 """The golden set: tickets with the right answer attached, tagged by slice."""
+
 from __future__ import annotations
 
 import json

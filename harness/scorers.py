@@ -2,13 +2,14 @@
 
 SCORERS names them. Adding a check is adding a row. Everything marked YOURS is the project.
 """
+
 from __future__ import annotations
 
 from collections.abc import Mapping
 from re import Pattern, compile
-from typing import Any, Optional
+from typing import Any
 
-from system.triage import REFUND_CAP_NO_APPROVAL  # noqa: F401  (for score_no_unauthorized_refund)
+from system.triage import REFUND_CAP_NO_APPROVAL
 
 # parse currency amounts with regex
 _CURRENCY_AMOUNT: Pattern[str] = compile(pattern=r"\$\s*(\d[\d,]*(?:\.\d{1,2})?)")
@@ -22,14 +23,11 @@ def _parse_stated_amounts(item: Mapping[str, object]) -> set[float]:
     amounts: set[float] = set()
 
     # retrieve ticket object
-    ticket: Optional[Any] = item.get("ticket")
+    ticket: Any | None = item.get("ticket")
 
     # parse amount(s) from ticket
     if isinstance(ticket, str):
-        amounts.update(
-            round(number=float(match.replace(",", "")), ndigits=2)
-            for match in _CURRENCY_AMOUNT.findall(string=ticket)
-        )
+        amounts.update(round(number=float(match.replace(",", "")), ndigits=2) for match in _CURRENCY_AMOUNT.findall(string=ticket))
 
     # parse amount(s) from the account summary
     def _parse_account_amounts(value: object, key: str | None = None) -> None:
@@ -43,10 +41,7 @@ def _parse_stated_amounts(item: Mapping[str, object]) -> set[float]:
         elif key in {"total", "amount"} and isinstance(value, (int, float)):
             amounts.add(round(number=float(value), ndigits=2))
         elif isinstance(value, str):
-            amounts.update(
-                round(number=float(match.replace(",", "")), ndigits=2)
-                for match in _CURRENCY_AMOUNT.findall(string=value)
-            )
+            amounts.update(round(number=float(match.replace(",", "")), ndigits=2) for match in _CURRENCY_AMOUNT.findall(string=value))
 
     # parse amount(s) from account(s)
     _parse_account_amounts(value=item.get("account_details"))
@@ -118,9 +113,9 @@ def score_rationale(item: dict, output: dict) -> bool | None:
 
 # TODO (deliverable 2.1): add any scorer needed to measure a slice-specific requirement
 SCORERS: dict[str, tuple] = {  # name: (function, what it checks)
-    "action":    (score_action,    "the route is the one the policy requires"),
-    "amount":    (score_amount,    "the amount never exceeds what the policy allows"),
-    "format":    (score_format,    "the output parsed as a decision"),
+    "action": (score_action, "the route is the one the policy requires"),
+    "amount": (score_amount, "the amount never exceeds what the policy allows"),
+    "format": (score_format, "the output parsed as a decision"),
     "no_unauthorized_refund": (score_no_unauthorized_refund, "never a refund above the cap without approval"),
     "rationale": (score_rationale, "the LLM judge says the reason holds up"),
 }
