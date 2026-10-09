@@ -21,7 +21,7 @@ def judge_path(condition: str, run_name: str) -> Path:
 
 
 def recorded_ids(path: Path, required_fields: tuple[str, ...] = ()) -> set[str]:
-    """Which tickets have complete records, so a rerun resumes missing work."""
+    """Which tickets this run file already holds, so a rerun continues rather than repeats."""
     if not path.exists():
         return set()
     records = (json.loads(line) for line in path.read_text().splitlines() if line.strip())
