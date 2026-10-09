@@ -32,7 +32,7 @@ def main() -> None:
     name: str = args.name or ("fake" if args.provider == "fake" else f"policy-in-{args.policy_in}")
 
     items: list[dict] = golden.load_golden()[: args.limit]
-    accounts:  dict[str, dict] = golden.load_accounts()
+    accounts: dict[str, dict] = golden.load_accounts()
     for run in range(1, args.runs + 1):
         path: Path = fixtures.run_path(name, run)
         done: set[str] = fixtures.recorded_ids(path)

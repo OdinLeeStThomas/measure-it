@@ -38,7 +38,7 @@ def render(item: dict, output: dict) -> tuple[str, str]:
             "ticket": item.get("ticket"),
             "account_details": item.get("account_details"),
         },
-        sort_keys=True, # consistency
+        sort_keys=True,  # consistency
     )
     user = (
         f"POLICY:\n{POLICY}\n"
