@@ -34,7 +34,7 @@ def main() -> None:
     items: list[dict] = golden.load_golden()[: args.limit]
     accounts: dict[str, dict] = golden.load_accounts()
     for run in range(1, args.runs + 1):
-        path: Path = fixtures.run_path(name, run)
+        path: Path = fixtures.run_path(condition=name, run=run)
         done: set[str] = fixtures.recorded_ids(path)
         todo: list[dict] = [i for i in items if i["id"] not in done]
         print(
@@ -42,9 +42,9 @@ def main() -> None:
             flush=True,
         )
         for item in todo:
-            rec: dict = triage(item["ticket"], account=accounts[item["account"]], provider=args.provider, policy_in=args.policy_in)
+            rec: dict = triage(ticket=item["ticket"], account=accounts[item["account"]], provider=args.provider, policy_in=args.policy_in)
             rec.update({"id": item["id"], "run": run, "condition": name})
-            fixtures.append(path, rec)
+            fixtures.append(path, record=rec)
             print(f"  {item['id']}  {rec['action']:9s} {'' if rec['refund_amount'] is None else rec['refund_amount']}", flush=True)
 
 
