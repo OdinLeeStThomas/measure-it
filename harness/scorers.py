@@ -111,7 +111,6 @@ def score_rationale(item: dict, output: dict) -> bool | None:
     return all(verdicts.values())
 
 
-# TODO (deliverable 2.1): add any scorer needed to measure a slice-specific requirement
 SCORERS: dict[str, tuple] = {  # name: (function, what it checks)
     "action": (score_action, "the route is the one the policy requires"),
     "amount": (score_amount, "the amount never exceeds what the policy allows"),
