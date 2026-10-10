@@ -13,3 +13,6 @@ __pycache__/
 # A large golden set that stays out of the repository (instructor's full set; drafts)
 golden/golden-full.json
 golden/*.local.json
+
+# WSL2
+*:Zone.Identifier

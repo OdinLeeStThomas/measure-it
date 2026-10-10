@@ -1,4 +1,5 @@
 """The report: per slice, per scorer, as counts. Read against the requirement."""
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -23,8 +24,7 @@ def per_slice(items: dict[str, dict], records: list[dict]) -> Table:
     return table
 
 
-CONDITION_LABEL = {"user": "policy sent in the user text, beside the ticket",
-                   "system": "policy sent as the system instruction"}
+CONDITION_LABEL: dict[str, str] = {"user": "policy sent in the user text, beside the ticket", "system": "policy sent as the system instruction"}
 
 
 def _rate(cell: list[bool] | None) -> float | None:
@@ -40,8 +40,7 @@ def _fmt(cell: list[bool] | None) -> str:
     return "-" if cell is None else f"{sum(cell)}/{len(cell)}"
 
 
-def summary(condition: str, runs: list[tuple[str, list[dict]]], tables: list[Table], items: dict[str, dict],
-            detail: bool = False) -> None:
+def summary(condition: str, runs: list[tuple[str, list[dict]]], tables: list[Table], items: dict[str, dict], detail: bool = False) -> None:
     """What happened in one condition, in plain words, then the numbers."""
     records = [r for _, rs in runs for r in rs]
     n_items = len({r["id"] for r in records})

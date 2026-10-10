@@ -7,6 +7,7 @@ plus one option, policy_in, which deliverable 6 asks you to measure.
     sample  -> the model returns *one sample* from a distribution over outputs
     parse   -> your code turns the text back into a decision, or refuses to
 """
+
 from __future__ import annotations
 
 import json
@@ -25,7 +26,7 @@ load_dotenv()  # reads GEMINI_API_KEY (and optional GEMINI_MODEL) from .env
 # pass no functions, so it does not apply; keep it out of the students' terminal.
 logging.getLogger("google_genai.models").setLevel(logging.ERROR)
 
-REFUND_CAP_NO_APPROVAL = 50     # dollars; the policy the prompt states
+REFUND_CAP_NO_APPROVAL = 50  # dollars; the policy the prompt states
 REFUND_CAP_WITH_APPROVAL = 200  # above this, always escalate
 
 # Pinned. gemini-3.5-flash-lite accepts a temperature and ignores it; do not use it.
@@ -66,6 +67,7 @@ def render(ticket: str, account: dict, policy_in: str = "user") -> tuple[str | N
 
 # --- 2. sample ----------------------------------------------------------------
 
+
 def sample(prompt: str, temperature: float | None, model: str, system: str | None = None) -> str:
     """Send the prompt once and return the raw text the model produced.
 
@@ -95,6 +97,7 @@ PROVIDERS = {"gemini": with_retries(sample), "fake": fake_model}
 
 # --- 3. parse -----------------------------------------------------------------
 
+
 def parse(raw: str) -> dict:
     """Turn the model's text into a decision, or label it malformed.
 
@@ -118,20 +121,22 @@ def parse(raw: str) -> dict:
     return {"action": obj["action"], "refund_amount": amount, "rationale": obj.get("rationale")}
 
 
-def triage(ticket: str, account: dict, *, temperature: float | None = None,
-           model: str = DEFAULT_MODEL, provider: str = "gemini",
-           policy_in: str = "user") -> dict:
+def triage(
+    ticket: str, account: dict, *, temperature: float | None = None, model: str = DEFAULT_MODEL, provider: str = "gemini", policy_in: str = "user"
+) -> dict:
     """render -> sample -> parse. Returns one record you can write to a file."""
     system, prompt = render(ticket, account, policy_in)
     t0 = time.perf_counter()
     raw = PROVIDERS[provider](prompt, temperature, model, system)
     latency_ms = round((time.perf_counter() - t0) * 1000)
     rec = parse(raw)
-    rec.update({
-        "model": model if provider == "gemini" else f"FAKE({model})",
-        "temperature": "default" if temperature is None else temperature,
-        "policy_in": policy_in,
-        "latency_ms": latency_ms,
-        "raw": raw,
-    })
+    rec.update(
+        {
+            "model": model if provider == "gemini" else f"FAKE({model})",
+            "temperature": "default" if temperature is None else temperature,
+            "policy_in": policy_in,
+            "latency_ms": latency_ms,
+            "raw": raw,
+        }
+    )
     return rec

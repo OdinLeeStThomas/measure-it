@@ -99,9 +99,9 @@ is re-scored from them.
 
 ```python
 SCORERS = {  # name: (function, what it checks)
-    "action":    (score_action,    "the route is the one the policy requires"),
-    "amount":    (score_amount,    "the amount never exceeds what the policy allows"),
-    "format":    (score_format,    "the output parsed as a decision"),
+    "action": (score_action, "the route is the one the policy requires"),
+    "amount": (score_amount, "the amount never exceeds what the policy allows"),
+    "format": (score_format, "the output parsed as a decision"),
     "rationale": (score_rationale, "the LLM judge says the reason holds up"),
 }
 ```
